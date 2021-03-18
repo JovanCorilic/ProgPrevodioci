@@ -17,6 +17,7 @@
 "select"	{return _SELECT;}
 "from"		{return _FROM;}
 "where"	{return _WHERE;}
+"loop"		{return _LOOP;}
 
 "("                  { return _LPAREN; }
 ")"                  { return _RPAREN; }
@@ -39,7 +40,9 @@
 "!="                 { return _RELOP; }
 
 "and"		{return _AND;}
+"&&"		{return _AND;}
 "or"		{return _OR;}
+"||"		{return _OR;}
 
 [a-zA-Z][a-zA-Z0-9]* { return _ID; }
 [+-]?[0-9]{1,10}     { return _INT_NUMBER;}

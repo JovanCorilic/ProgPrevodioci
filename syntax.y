@@ -1,6 +1,8 @@
 %{
   #include <stdio.h>
+  #include <stdlib.h>
   #include "defs.h"
+  #include "symtab.h"
 
   int yyparse(void);
   int yylex(void);
@@ -42,6 +44,7 @@
 %token _POSTINCREMENT
 %token _AND
 %token _OR
+%token _LOOP
 
 %type <i> num_exp exp literal function_call argument rel_exp
 
@@ -97,6 +100,7 @@ statement
   | selection_statement
   | return_statement
   | inc_statement
+  | loop_statement
   ;
   
 inc_statement
@@ -123,6 +127,18 @@ exp
   | _LPAREN num_exp _RPAREN
   | _ID _POSTINCREMENT
   ;
+  
+loop_statement
+	: _LOOP _LPAREN _ID _COMMA _literal _COMMA literal _COMMA literal _RPAREN statement
+		{
+			if(lookup_symbol($3, FUN) == NO_INDEX){
+				err("ID is undefined");
+			}
+			if(get_type($5) != get_type($3) || get_type($7) != get_type($3) || get_type($9) != get_type($3)){
+				err("incompatible types in loop");
+			}
+			goto loop_statement;
+		}
 
 literal
   : _INT_NUMBER
@@ -170,9 +186,31 @@ return_statement
 
 int yyerror(char *s) {
   fprintf(stderr, "\nline %d: ERROR: %s", yylineno, s);
+  error_count++;
   return 0;
 }
 
+void warning(char *s) {
+  fprintf(stderr, "\nline %d: WARNING: %s", yylineno, s);
+  warning_count++;
+}
+
 int main() {
-  return yyparse();
+  int synerr;
+  init_symtab();
+
+  synerr = yyparse();
+
+  clear_symtab();
+  
+  if(warning_count)
+    printf("\n%d warning(s).\n", warning_count);
+
+  if(error_count)
+    printf("\n%d error(s).\n", error_count);
+
+  if(synerr)
+    return -1; //syntax error
+  else
+    return error_count; //semantic errors
 }
