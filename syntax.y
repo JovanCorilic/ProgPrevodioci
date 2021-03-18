@@ -5,29 +5,45 @@
   int yyparse(void);
   int yylex(void);
   int yyerror(char *s);
+  void warning(char *s);
   extern int yylineno;
+  char char_buffer[CHAR_BUFFER_LENGTH];
+  int error_count = 0;
+  int warning_count = 0;
+  int var_num = 0;
+  int fun_idx = -1;
+  int fcall_idx = -1;
 %}
 
-%token _TYPE
+%union {
+  int i;
+  char *s;
+}
+
+%token <i> _TYPE
 %token _IF
 %token _ELSE
 %token _RETURN
-%token _ID
-%token _INT_NUMBER
-%token _UINT_NUMBER
+%token <s> _ID
+%token <s> _INT_NUMBER
+%token <s> _UINT_NUMBER
 %token _LPAREN
 %token _RPAREN
 %token _LBRACKET
 %token _RBRACKET
 %token _ASSIGN
 %token _SEMICOLON
-%token _AROP
-%token _RELOP
+%token <i> _AROP
+%token <i> _RELOP
 %token _SELECT
 %token _FROM
 %token _WHERE
 %token _COMMA
 %token _POSTINCREMENT
+%token _AND
+%token _OR
+
+%type <i> num_exp exp literal function_call argument rel_exp
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -133,6 +149,8 @@ if_part
 
 rel_exp
   : num_exp _RELOP num_exp
+  |	rel_exp _AND rel_exp
+  | rel_exp _OR rel_exp
   ;
   
 selection_statement

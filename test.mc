@@ -1,7 +1,7 @@
 int abs(int i) {
   int res;
   int a,b,c;
-  if(i < 0)
+  if(i < 0 and i>1 or i<6 and i>1)
     res = 0 - i;
   else 
     res = i;

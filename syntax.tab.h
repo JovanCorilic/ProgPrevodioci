@@ -69,7 +69,9 @@ extern int yydebug;
     _WHERE = 275,
     _COMMA = 276,
     _POSTINCREMENT = 277,
-    ONLY_IF = 278
+    _AND = 278,
+    _OR = 279,
+    ONLY_IF = 280
   };
 #endif
 
