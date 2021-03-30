@@ -1,24 +1,19 @@
 //OPIS: jedna deklaracija sa dve promenljive
-void nesto(int a){
+int nesto(int a,int b){
 	int c;
 	
 	c=2;
-	return;
+
 	return c;
 	
 }
 
-int main() {
-    int a;
-    
-    int b;
-    
-    int g,h,j;
-    
-    g= a + b + g++;
+void main() {
+    int a,b;
     
     
-   
     
-
+    a=nesto(a,b);
+    
+    
 }

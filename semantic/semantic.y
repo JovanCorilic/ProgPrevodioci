@@ -74,8 +74,6 @@ function
         else 
           err("redefinition of function '%s'", $2);
          
-        /*if((lookup_symbol("return", NO_KIND) == NO_INDEX) && ($1!=VOID))
-          warn("Function isnt VOID but doesnt have return statement!");*/
         //printf("%d",fun_idx);
        
       }
@@ -93,6 +91,9 @@ function
 parameters
 	:	parameter
 	| parameters _COMMA parameter
+	{
+		set_atr1(fun_idx, get_atr1(fun_idx)+1);
+	}
 	
 	;
 
@@ -200,6 +201,7 @@ num_exp
           err("invalid operands: arithmetic operation");
       }
   | num_exp _POSTINCREMENT
+  //| num_exp _COMMA _ID
   ;
 
 exp
@@ -232,6 +234,7 @@ function_call
       }
     _LPAREN argument _RPAREN
       {
+
         if(get_atr1(fcall_idx) != $4)
           err("wrong number of args to function '%s'", 
               get_name(fcall_idx));
@@ -251,6 +254,13 @@ argument
             get_name(fcall_idx));
       $$ = 1;
     }
+  | argument _COMMA num_exp
+  {
+  		if(get_atr2(fcall_idx) != get_type($3))
+        err("incompatible type for argument in '%s'",
+            get_name(fcall_idx));
+  		$$ = $$ +1;
+  }
   ;
 
 if_statement
