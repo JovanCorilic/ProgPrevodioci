@@ -66,7 +66,8 @@ extern int yydebug;
     _RELOP = 272,
     _COMMA = 273,
     _POSTINCREMENT = 274,
-    ONLY_IF = 275
+    _WHILE = 275,
+    ONLY_IF = 276
   };
 #endif
 
@@ -74,12 +75,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 25 "semantic.y"
+#line 27 "semantic.y"
 
   int i;
   char *s;
 
-#line 83 "semantic.tab.h"
+#line 84 "semantic.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

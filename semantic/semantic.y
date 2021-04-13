@@ -20,6 +20,8 @@
   int returnCall=0;
   int type = -1;
   int returnKoriscen = 0;
+  int pocetakBloka=-1;
+  unsigned nivoBloka=0;
 %}
 
 %union {
@@ -44,6 +46,7 @@
 %token <i> _RELOP
 %token _COMMA
 %token <i> _POSTINCREMENT
+%token _WHILE
 
 %type <i> num_exp exp literal function_call argument rel_exp
 
@@ -128,6 +131,7 @@ variable
       {
       	if($1==VOID)
       		err("Type is void!");
+      	
       }
   ;
   
@@ -136,10 +140,15 @@ vars
 		{
 				//printf("%zu\n",strlen($1));
 				int temp = strlen($1);
+				
 				if(temp>1)
 					err("Identifaer must have one simbol to be identifaed with");
-        if(lookup_symbol($1, VAR|PAR) == NO_INDEX)
-           insert_symbol($1, VAR, type, ++var_num, NO_ATR);
+				
+				
+        if(lookup_symbol($1, VAR|PAR) == NO_INDEX || get_atr2(lookup_symbol($1, VAR|PAR))!=nivoBloka){
+           insert_symbol($1, VAR, type, ++var_num,nivoBloka);
+           //printf("%s\n%d\n%d\n",$1,get_atr2(lookup_symbol($1, VAR|PAR)),nivoBloka);
+           }
         else 
            err("redefinition of '%s'", $1);
   	}
@@ -148,8 +157,11 @@ vars
 				int temp = strlen($3);
 				if(temp>1)
 					err("Identifaer must have one simbol to be identifaed with");
-        if(lookup_symbol($3, VAR|PAR) == NO_INDEX)
-           insert_symbol($3, VAR, type, ++var_num, NO_ATR);
+        if(lookup_symbol($3, VAR|PAR) == NO_INDEX || get_atr2(lookup_symbol($3, VAR|PAR))!=nivoBloka)
+        	{
+           insert_symbol($3, VAR, type, ++var_num,nivoBloka);
+           
+           }
         else 
            err("redefinition of '%s'", $3);
   	}
@@ -166,6 +178,7 @@ statement
   | if_statement
   | return_statement
   | postincrement_statement
+  | while_statement
   ;
   
 postincrement_statement
@@ -178,7 +191,16 @@ postincrement_statement
 	;
 
 compound_statement
-  : _LBRACKET statement_list _RBRACKET
+  : _LBRACKET
+  {
+  	pocetakBloka = get_last_element()+1;
+  	nivoBloka +=1;
+  }
+   variable_list statement_list _RBRACKET
+   {
+   	clear_symbols(pocetakBloka);
+   	nivoBloka -=1;
+   }
   ;
 
 assignment_statement
@@ -279,6 +301,10 @@ rel_exp
           err("invalid operands: relational operator");
       }
   ;
+  
+while_statement
+	: _WHILE _LPAREN rel_exp _RPAREN statement
+	;
 
 return_statement
   : _RETURN num_exp _SEMICOLON
