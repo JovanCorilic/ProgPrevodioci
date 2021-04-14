@@ -1,4 +1,3 @@
-//OPIS: jedna deklaracija sa dve promenljive
 int nesto(int a,int b){
 	int c;
 	
