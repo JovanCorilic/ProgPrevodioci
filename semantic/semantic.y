@@ -190,7 +190,22 @@ statement
   | postincrement_statement
   | while_statement
   | loop_statement
+  | branch_statement
   ;
+  
+branch_statement
+	: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET
+	{
+		int idx = lookup_symbol($3, VAR|PAR);
+		if(idx == NO_INDEX)
+          err("Parameter '%s' not declared!", $3);
+    int temp = lookup_symbol($3, VAR|PAR);
+   
+    if(get_type(temp) != get_type($5) || get_type(temp) != get_type($7) || get_type(temp) != get_type($9))
+          err("Parameter and konstant are not the same type");
+	}
+		_ONE _ARROW statement _TWO _ARROW statement _THREE _ARROW statement _OTHER _ARROW statement
+	;
   
 loop_statement
 	:	_LOOP _LPAREN _ID _COMMA literal _COMMA literal _COMMA literal _RPAREN 

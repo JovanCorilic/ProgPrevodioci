@@ -69,7 +69,15 @@ extern int yydebug;
     _WHILE = 275,
     _LOGICOPER = 276,
     _LOOP = 277,
-    ONLY_IF = 278
+    _BRANCH = 278,
+    _LSQUAREBRACKET = 279,
+    _RSQUAREBRACKET = 280,
+    _ARROW = 281,
+    _ONE = 282,
+    _TWO = 283,
+    _THREE = 284,
+    _OTHER = 285,
+    ONLY_IF = 286
   };
 #endif
 
@@ -82,7 +90,7 @@ union YYSTYPE
   int i;
   char *s;
 
-#line 86 "semantic.tab.h"
+#line 94 "semantic.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
