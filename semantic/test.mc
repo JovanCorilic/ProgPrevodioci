@@ -15,6 +15,16 @@ void main() {
 	int y;
     
   a=nesto(a,b);
+  
+  if ( a > 5 and b < 4 or b>5)
+  {
+   a = 5;
+  }
+  
+  loop ( a,2,3,4 )
+  {
+  
+  }
     
   {
 	int x;
@@ -22,7 +32,7 @@ void main() {
 	x = 5;
 	y = x + y; 
 	}
-	while ( a < 10) 
+	while ( a < 10 ) 
 	{ 
 	a = a + 3;  
 	while (b > 0) 

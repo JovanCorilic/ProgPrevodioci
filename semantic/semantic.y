@@ -47,6 +47,16 @@
 %token _COMMA
 %token <i> _POSTINCREMENT
 %token _WHILE
+%token _LOGICOPER
+%token _LOOP
+%token _BRANCH
+%token _LSQUAREBRACKET
+%token _RSQUAREBRACKET
+%token _ARROW
+%token _ONE
+%token _TWO
+%token _THREE
+%token _OTHER
 
 %type <i> num_exp exp literal function_call argument rel_exp
 
@@ -179,7 +189,22 @@ statement
   | return_statement
   | postincrement_statement
   | while_statement
+  | loop_statement
   ;
+  
+loop_statement
+	:	_LOOP _LPAREN _ID _COMMA literal _COMMA literal _COMMA literal _RPAREN 
+	{
+		int idx = lookup_symbol($3, VAR|PAR);
+		if(idx == NO_INDEX)
+          err("Parameter '%s' not declared!", $3);
+    int temp = lookup_symbol($3, VAR|PAR);
+   
+    if(get_type(temp) != get_type($5) || get_type(temp) != get_type($7) || get_type(temp) != get_type($9))
+          err("Parameter and literal are not the same type");
+	}
+	statement
+	;
   
 postincrement_statement
 	:	_ID _POSTINCREMENT _SEMICOLON
@@ -291,8 +316,13 @@ if_statement
   ;
 
 if_part
-  : _IF _LPAREN rel_exp _RPAREN statement
+  : _IF _LPAREN logic_rel_exp _RPAREN statement
   ;
+  
+logic_rel_exp
+	: rel_exp
+	| logic_rel_exp _LOGICOPER rel_exp
+	;
 
 rel_exp
   : num_exp _RELOP num_exp
@@ -303,7 +333,7 @@ rel_exp
   ;
   
 while_statement
-	: _WHILE _LPAREN rel_exp _RPAREN statement
+	: _WHILE _LPAREN logic_rel_exp _RPAREN statement
 	;
 
 return_statement

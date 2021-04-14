@@ -17,7 +17,15 @@
 "else"               { return _ELSE; }
 "return"             { return _RETURN; }
 "while"	{return _WHILE;}
+"loop"		{return _LOOP;}
+"branch"	{return _BRANCH;}
+"one"		{return _ONE;}
+"two"		{return _TWO;}
+"three"	{return _THREE;}
+"other"	{return _OTHER;}
 
+"["		{return _LSQUAREBRACKET;}
+"]"		{return _RSQUAREBRACKET;}
 "("                  { return _LPAREN; }
 ")"                  { return _RPAREN; }
 "{"                  { return _LBRACKET; }
@@ -29,6 +37,7 @@
 "+"                  { yylval.i = ADD; return _AROP; }
 "-"                  { yylval.i = SUB; return _AROP; }
 "++"		{yylval.i=ADD;	return _POSTINCREMENT;}
+"->"		{return _ARROW;}
 
 "<"                  { yylval.i = LT; return _RELOP; }
 ">"                  { yylval.i = GT; return _RELOP; }
@@ -36,6 +45,9 @@
 ">="                 { yylval.i = GE; return _RELOP; }
 "=="                 { yylval.i = EQ; return _RELOP; }
 "!="                 { yylval.i = NE; return _RELOP; }
+
+"and"		{return _LOGICOPER;}
+"or"		{return _LOGICOPER;}
 
 [a-zA-Z][a-zA-Z0-9]* { yylval.s = strdup(yytext); 
                        return _ID; }
