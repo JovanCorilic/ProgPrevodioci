@@ -104,10 +104,6 @@ function
 parameters
 	:	parameter
 	| parameters _COMMA parameter
-	{
-		set_atr1(fun_idx, get_atr1(fun_idx)+1);
-	}
-	
 	;
 
 parameter
@@ -120,9 +116,14 @@ parameter
       		err("Type is void!");
       	
 		    insert_symbol($2, PAR, $1, 1, NO_ATR);
-		    set_atr1(fun_idx, 1);
-		    set_atr2(fun_idx, $1);
-		    
+		    set_atr1(fun_idx, get_atr1(fun_idx)+1);
+		    if($1 != get_atr2(fun_idx) && get_atr2(fun_idx)!=NO_TYPE)
+		    {
+		    	if(get_atr2(fun_idx) != (INT + UINT))
+		    		set_atr2(fun_idx, get_atr2(fun_idx)+$1);
+		    }else{
+		    	set_atr2(fun_idx, $1);
+		    }
 		    
       }
   ;
@@ -191,6 +192,7 @@ statement
   | while_statement
   | loop_statement
   | branch_statement
+  | function_statement
   ;
   
 branch_statement
@@ -286,6 +288,10 @@ literal
   | _UINT_NUMBER
       { $$ = insert_literal($1, UINT); }
   ;
+  
+function_statement
+	:	function_call _SEMICOLON
+	;
 
 function_call
   : _ID 
@@ -311,16 +317,20 @@ argument
 
   | num_exp
     { 
-      if(get_atr2(fcall_idx) != get_type($1))
-        err("incompatible type for argument in '%s'",
-            get_name(fcall_idx));
+    	if(get_atr2(fcall_idx) != get_type($1)+INT)
+    		if(get_atr2(fcall_idx) != get_type($1)+UINT)
+				  if(get_atr2(fcall_idx) != get_type($1))
+				    err("incompatible type for argument in '%s'",
+				        get_name(fcall_idx));
       $$ = 1;
     }
   | argument _COMMA num_exp
   {
-  		if(get_atr2(fcall_idx) != get_type($3))
-        err("incompatible type for argument in '%s'",
-            get_name(fcall_idx));
+    	if(get_atr2(fcall_idx) != get_type($3)+INT)
+    		if(get_atr2(fcall_idx) != get_type($3)+UINT)
+				  if(get_atr2(fcall_idx) != get_type($3))
+				    err("incompatible type for argument in '%s'",
+				        get_name(fcall_idx));
   		$$ = $$ +1;
   }
   ;

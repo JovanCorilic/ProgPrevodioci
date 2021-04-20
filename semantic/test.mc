@@ -1,3 +1,4 @@
+//OPIS: jedna deklaracija sa dve promenljive
 int nesto(int a,int b){
 	int c;
 	
@@ -7,13 +8,20 @@ int nesto(int a,int b){
 	
 }
 
+int test(int a, unsigned c){
+	return a;
+}
+
 void main() {
   int a,b;
+  unsigned l;
   
   int x; 
 	int y;
     
   a=nesto(a,b);
+  x = test(a,l);
+  test(a,l);
   
   if ( a > 5 and b < 4 or b>5)
   {
