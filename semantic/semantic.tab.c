@@ -1645,7 +1645,7 @@ yyreduce:
         {
         int idx = lookup_symbol((yyvsp[-2].s), VAR|PAR);
         if(idx == NO_INDEX)
-          err("invalid lvalue '%s' in assignment", (yyvsp[-2].s));
+          err("Parameter '%s' not declared!", (yyvsp[-2].s));
       }
 #line 1651 "semantic.tab.c"
     break;

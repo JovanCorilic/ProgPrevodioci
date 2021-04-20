@@ -18,6 +18,7 @@ void main() {
   
   int x; 
 	int y;
+	x++;
 	
 	//WDwdwdwdwdwdwdwdwdwdw
 	/*wwdwdwdwd

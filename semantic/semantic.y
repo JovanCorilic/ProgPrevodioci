@@ -266,7 +266,7 @@ postincrement_statement
 	{
         int idx = lookup_symbol($1, VAR|PAR);
         if(idx == NO_INDEX)
-          err("invalid lvalue '%s' in assignment", $1);
+          err("Parameter '%s' not declared!", $1);
       }
 	;
 
