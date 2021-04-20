@@ -23,6 +23,9 @@
 "two"		{return _TWO;}
 "three"	{return _THREE;}
 "other"	{return _OTHER;}
+"select"	{return _SELECT;}
+"from"	{return _FROM;}
+"where"	{return _WHERE;}
 
 "["		{return _LSQUAREBRACKET;}
 "]"		{return _RSQUAREBRACKET;}
@@ -58,5 +61,6 @@
                        return _UINT_NUMBER;}
 
 \/\/.*               { /* skip */ }
+"/*"([^*]|"\n"|(\*+([^*/]|"\n")))*"*"+"/" {/* skip */}
 .                    { printf("line %d: LEXICAL ERROR on char %c\n", yylineno, *yytext);}
 %%

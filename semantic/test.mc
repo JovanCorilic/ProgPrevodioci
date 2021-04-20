@@ -13,11 +13,20 @@ int test(int a, unsigned c){
 }
 
 void main() {
-  int a,b;
+  int a,b,c;
   unsigned l;
   
   int x; 
 	int y;
+	
+	//WDwdwdwdwdwdwdwdwdwdw
+	/*wwdwdwdwd
+	wdwdwdwd
+	
+	wdwdwdwd wdwdwdw///
+	*/
+	
+	select a, b, c from x where (a > 4);
     
   a=nesto(a,b);
   x = test(a,l);

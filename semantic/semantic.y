@@ -22,6 +22,7 @@
   int returnKoriscen = 0;
   int pocetakBloka=-1;
   unsigned nivoBloka=0;
+  unsigned tipZaSelect;
 %}
 
 %union {
@@ -57,6 +58,9 @@
 %token _TWO
 %token _THREE
 %token _OTHER
+%token _SELECT
+%token _FROM
+%token _WHERE
 
 %type <i> num_exp exp literal function_call argument rel_exp
 
@@ -193,7 +197,41 @@ statement
   | loop_statement
   | branch_statement
   | function_statement
+  | select_statement
   ;
+  
+select_statement
+	:	_SELECT multi_vars _FROM _ID
+	{
+		int idx = lookup_symbol($4, VAR|PAR);
+		if(idx == NO_INDEX)
+          err("Parameter '%s' not declared!", $4);
+   	if(tipZaSelect != get_type(idx)){
+   		err("Parameters and '%s' are not the same type!",$4);
+   	}
+	}
+		_WHERE _LPAREN logic_rel_exp _RPAREN _SEMICOLON
+	;
+	
+multi_vars
+	:	_ID
+	{
+		int idx = lookup_symbol($1, VAR|PAR);
+		if(idx == NO_INDEX)
+          err("Parameter '%s' not declared!", $1);
+    tipZaSelect = get_type(idx);
+    
+	}
+	| multi_vars _COMMA _ID
+	{
+		int idx = lookup_symbol($3, VAR|PAR);
+		if(idx == NO_INDEX)
+          err("Parameter '%s' not declared!", $3);
+   	if(tipZaSelect != get_type(idx)){
+   		err("Parameters are not the same type!");
+   	}
+	}
+	;
   
 branch_statement
 	: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET

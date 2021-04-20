@@ -77,7 +77,10 @@ extern int yydebug;
     _TWO = 283,
     _THREE = 284,
     _OTHER = 285,
-    ONLY_IF = 286
+    _SELECT = 286,
+    _FROM = 287,
+    _WHERE = 288,
+    ONLY_IF = 289
   };
 #endif
 
@@ -85,12 +88,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 27 "semantic.y"
+#line 28 "semantic.y"
 
   int i;
   char *s;
 
-#line 94 "semantic.tab.h"
+#line 97 "semantic.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
