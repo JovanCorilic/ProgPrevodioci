@@ -12,6 +12,10 @@ int test(int a, unsigned c){
 	return a;
 }
 
+void nesto2(){
+
+}
+
 void main() {
   int a,b,c;
   unsigned l;
@@ -29,6 +33,7 @@ void main() {
 	
 	select a, b, c from x where (a > 4);
     
+  nesto2();
   a=nesto(a,b);
   x = test(a,l);
   test(a,l);

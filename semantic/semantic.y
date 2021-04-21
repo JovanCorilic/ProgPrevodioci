@@ -23,6 +23,10 @@
   int pocetakBloka=-1;
   unsigned nivoBloka=0;
   unsigned tipZaSelect;
+  int lista[SYMBOL_TABLE_LENGTH][SYMBOL_TABLE_LENGTH];
+  int brojFunkcije=-1;
+  int brojPromenljive=-1;
+  
 %}
 
 %union {
@@ -90,7 +94,8 @@ function
           fun_idx = insert_symbol($2, FUN, $1, NO_ATR, NO_ATR);
         else 
           err("redefinition of function '%s'", $2);
-         
+        brojFunkcije +=1;
+        brojPromenljive = -1;
         //printf("%d",fun_idx);
        
       }
@@ -121,12 +126,18 @@ parameter
       	
 		    insert_symbol($2, PAR, $1, 1, NO_ATR);
 		    set_atr1(fun_idx, get_atr1(fun_idx)+1);
-		    if($1 != get_atr2(fun_idx) && get_atr2(fun_idx)!=NO_TYPE)
-		    {
-		    	if(get_atr2(fun_idx) != (INT + UINT))
-		    		set_atr2(fun_idx, get_atr2(fun_idx)+$1);
-		    }else{
+		    
+		    brojPromenljive +=1;
+		    if(get_atr2(fun_idx)==NO_TYPE){
+		    	lista[brojFunkcije][brojPromenljive]=fun_idx;
+		    	brojPromenljive +=1;
+		    	lista[brojFunkcije][brojPromenljive]=$1;
 		    	set_atr2(fun_idx, $1);
+		    }else{
+		    	if(brojPromenljive==SYMBOL_TABLE_LENGTH){
+		    		err("63 parameters are allowed to be in brackets of function");
+		    	}
+		    	lista[brojFunkcije][brojPromenljive]=$1;
 		    }
 		    
       }
@@ -355,20 +366,26 @@ argument
 
   | num_exp
     { 
-    	if(get_atr2(fcall_idx) != get_type($1)+INT)
-    		if(get_atr2(fcall_idx) != get_type($1)+UINT)
-				  if(get_atr2(fcall_idx) != get_type($1))
-				    err("incompatible type for argument in '%s'",
-				        get_name(fcall_idx));
+    	
+    	brojPromenljive = 1;
+    	for(int i = 0;i<SYMBOL_TABLE_LENGTH;i++){
+    		if(lista[i][0]==fcall_idx){
+    			brojFunkcije = i;
+    			break;
+    		}
+    	}
+    	
+		  if(lista[brojFunkcije][1] != get_type($1))
+		    err("incompatible type for argument in '%s'",
+		        get_name(fcall_idx));
       $$ = 1;
     }
   | argument _COMMA num_exp
   {
-    	if(get_atr2(fcall_idx) != get_type($3)+INT)
-    		if(get_atr2(fcall_idx) != get_type($3)+UINT)
-				  if(get_atr2(fcall_idx) != get_type($3))
-				    err("incompatible type for argument in '%s'",
-				        get_name(fcall_idx));
+    	brojPromenljive += 1;
+		  if(lista[brojFunkcije][brojPromenljive] != get_type($3))
+		    err("incompatible type for argument in '%s'",
+		        get_name(fcall_idx));
   		$$ = $$ +1;
   }
   ;
