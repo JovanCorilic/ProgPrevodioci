@@ -99,7 +99,7 @@ function
         //printf("%d",fun_idx);
        
       }
-    _LPAREN parameters _RPAREN body
+    _LPAREN sabezParametara _RPAREN body
       {
       	if(($1!=VOID) && (returnKoriscen==0))
           warn("Function %s isnt VOID but doesnt have return statement!",$2);
@@ -110,16 +110,19 @@ function
       }
   ;
   
+sabezParametara
+	: /* empty */
+      { set_atr1(fun_idx, 0); }
+  | parameters
+  ;
+  
 parameters
 	:	parameter
 	| parameters _COMMA parameter
 	;
 
 parameter
-  : /* empty */
-      { set_atr1(fun_idx, 0); }
-
-  | _TYPE _ID
+  : _TYPE _ID
       {
       	if($1==VOID)
       		err("Type is void!");
@@ -313,7 +316,6 @@ num_exp
         if(get_type($1) != get_type($3))
           err("invalid operands: arithmetic operation");
       }
-  | num_exp _POSTINCREMENT
   //| num_exp _COMMA _ID
   ;
 
@@ -328,6 +330,12 @@ exp
   | function_call
   | _LPAREN num_exp _RPAREN
       { $$ = $2; }
+  | _ID _POSTINCREMENT
+  {
+        $$ = lookup_symbol($1, VAR|PAR);
+        if($$ == NO_INDEX)
+          err("'%s' undeclared", $1);
+  }
   ;
 
 literal
