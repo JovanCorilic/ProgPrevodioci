@@ -1,10 +1,10 @@
 //OPIS: u pozivanje funkcije tip nije isti
-void function(unsigned a){
+void function(int a, unsigned c, int d){
 
 }
 
 int main() {
-    int a,b;
-    function(a);
+    int a,b,x;
+    function(a,b,x);
 }
 
