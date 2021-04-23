@@ -376,7 +376,8 @@ argument
     { 
     	
     	brojPromenljive = 1;
-    	for(int i = 0;i<SYMBOL_TABLE_LENGTH;i++){
+      int i;
+    	for(i = 0;i<SYMBOL_TABLE_LENGTH;i++){
     		if(lista[i][0]==fcall_idx){
     			brojFunkcije = i;
     			break;
