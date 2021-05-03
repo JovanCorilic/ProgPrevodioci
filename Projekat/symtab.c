@@ -63,7 +63,6 @@ int insert_literal(char *str, unsigned type) {
 int lookup_symbol(char *name, unsigned kind) {
   int i;
   for(i = first_empty - 1; i > FUN_REG; i--) {
-    //printf("\n%s\n",symbol_table[i].name);
     if(strcmp(symbol_table[i].name, name) == 0 
        && symbol_table[i].kind & kind)
        return i;

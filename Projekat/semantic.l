@@ -4,6 +4,7 @@
    #include <string.h>
    #include "semantic.tab.h"
    #include "defs.h"
+   extern YYSTYPE yylval; 
 %}
 
 %%

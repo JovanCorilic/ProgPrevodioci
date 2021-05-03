@@ -11,7 +11,6 @@ typedef struct sym_entry {
    unsigned atr2;          // dodatni attribut simbola
 } SYMBOL_ENTRY;
 
-
 // Vraca indeks prvog sledeceg praznog elementa.
 int get_next_empty_element(void);
 
