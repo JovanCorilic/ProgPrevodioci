@@ -2,9 +2,10 @@
   #include <stdio.h>
   #include <stdlib.h>
   #include "defs.h"
+  #include "codegen.h"
   #include "symtab.h"
   #include <string.h>
-  #include "codegen.h"
+
 
   int yyparse(void);
   int yylex(void);
@@ -30,6 +31,8 @@
   int lista[SYMBOL_TABLE_LENGTH][SYMBOL_TABLE_LENGTH];
   int brojFunkcije=-1;
   int brojPromenljive=-1;
+  int ifPartRel_Exp=-1;
+  int ifPartPrenos=-1;
   
 %}
 
@@ -474,24 +477,30 @@ if_part
   : _IF _LPAREN 
   {
     $<i>$ = ++lab_num;
+    ifPartPrenos = ++lab_num;
     code("\n@if%d:", lab_num);
   }
   logic_rel_exp _RPAREN statement
   {
-    code("\n\t\tJMP \t@exit%d", $<i>3);
-    code("\n@false%d:", $<i>3);
-    $$ = $<i>3;
+    code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+    code("\n@false%d:", ifPartPrenos);
+    $$ = ifPartPrenos;
   }
   ;
   
 logic_rel_exp
 	: rel_exp
 	{
-		$$ = $1;
-    code("\n\t\t%s\t@false%d", opp_jumps[$1], $<i>3); 
-    code("\n@true%d:", $<i>3);
+		ifPartRel_Exp = $1;
+    code("\n\t\t%s\t@false%d", opp_jumps[$1], ifPartPrenos); 
+    code("\n@true%d:", ifPartPrenos);
   }
 	| logic_rel_exp _LOGICOPER rel_exp
+	{
+		ifPartRel_Exp = $3;
+    code("\n\t\t%s\t@false%d", opp_jumps[$3], ifPartPrenos); 
+    code("\n@true%d:", ifPartPrenos);
+  }
 	;
 
 rel_exp
