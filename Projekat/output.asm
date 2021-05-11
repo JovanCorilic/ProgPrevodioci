@@ -1,4 +1,6 @@
 
+y:
+		WORD	1
 main:
 		PUSH	%14
 		MOV 	%15,%14
@@ -6,6 +8,10 @@ main:
 @main_body:
 		MOV 	$11,-4(%14)
 		MOV 	$13,-8(%14)
+		MOV 	$12,y
+		ADDS	y,$1,y
+		ADDU	-4(%14),y,%0
+		MOV 	%0,-4(%14)
 		ADDU	-8(%14),$1,%0
 		MOV 	%0,-8(%14)
 		ADDS	-8(%14),$1,-8(%14)

@@ -261,8 +261,11 @@ select_statement
 	:	_SELECT multi_vars _FROM _ID
 	{
 		int idx = lookup_symbol($4, VAR|PAR);
-		if(idx == NO_INDEX)
-          err("Parameter '%s' not declared!", $4);
+		if(idx == NO_INDEX){
+					idx = lookup_symbol($4, GVAR);
+					if(idx == NO_INDEX)
+          	err("Parameter '%s' not declared!", $4);
+    }
    	if(tipZaSelect != get_type(idx)){
    		err("Parameters and '%s' are not the same type!",$4);
    	}
@@ -275,7 +278,11 @@ multi_vars
 	{
 		int idx = lookup_symbol($1, VAR|PAR);
 		if(idx == NO_INDEX)
-          err("Parameter '%s' not declared!", $1);
+			{
+          idx = lookup_symbol($1, GVAR);
+					if(idx == NO_INDEX)
+          	err("Parameter '%s' not declared!", $1);
+      }
     tipZaSelect = get_type(idx);
     
 	}
@@ -283,7 +290,11 @@ multi_vars
 	{
 		int idx = lookup_symbol($3, VAR|PAR);
 		if(idx == NO_INDEX)
-          err("Parameter '%s' not declared!", $3);
+      {
+          idx = lookup_symbol($3, GVAR);
+					if(idx == NO_INDEX)
+          	err("Parameter '%s' not declared!", $3);
+      }
    	if(tipZaSelect != get_type(idx)){
    		err("Parameters are not the same type!");
    	}
@@ -295,7 +306,11 @@ branch_statement
 	{
 		int idx = lookup_symbol($3, VAR|PAR);
 		if(idx == NO_INDEX)
-          err("Parameter '%s' not declared!", $3);
+          {
+          idx = lookup_symbol($3, GVAR);
+					if(idx == NO_INDEX)
+          	err("Parameter '%s' not declared!", $3);
+      }
     int temp = lookup_symbol($3, VAR|PAR);
    
     if(get_type(temp) != get_type($5) || get_type(temp) != get_type($7) || get_type(temp) != get_type($9))
@@ -309,7 +324,11 @@ loop_statement
 	{
 		int idx = lookup_symbol($3, VAR|PAR);
 		if(idx == NO_INDEX)
-          err("Parameter '%s' not declared!", $3);
+        {
+        idx = lookup_symbol($3, GVAR);
+				if(idx == NO_INDEX)
+        	err("Parameter '%s' not declared!", $3);
+    }
     int temp = lookup_symbol($3, VAR|PAR);
    
     if(get_type(temp) != get_type($5) || get_type(temp) != get_type($7) || get_type(temp) != get_type($9))
@@ -356,8 +375,11 @@ assignment_statement
   : _ID _ASSIGN num_exp _SEMICOLON
       {
         int idx = lookup_symbol($1, VAR|PAR);
-        if(idx == NO_INDEX)
-          err("invalid lvalue '%s' in assignment", $1);
+        if(idx == NO_INDEX){
+          idx = lookup_symbol($1, GVAR);
+          if (idx == NO_INDEX)
+          	err("invalid lvalue '%s' in assignment", $1);
+        }
         else
           if(get_type(idx) != get_type($3))
             err("incompatible types in assignment");
@@ -390,8 +412,11 @@ exp
   | _ID
       {
         $$ = lookup_symbol($1, VAR|PAR);
-        if($$ == NO_INDEX)
-          err("'%s' undeclared", $1);
+        if($$ == NO_INDEX){
+        	$$ = lookup_symbol($1, GVAR);
+        	if ($$ == NO_INDEX)
+          	err("'%s' undeclared", $1);
+        }
       }
   | function_call
 		{
