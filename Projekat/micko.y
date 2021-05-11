@@ -90,7 +90,7 @@ program
   ;
 
 function_list
-  : function
+  : /* empty */
   | function_list function
   | function_list global_variable
   ;
@@ -322,8 +322,20 @@ postincrement_statement
 	:	_ID _POSTINCREMENT _SEMICOLON
 	{
         int idx = lookup_symbol($1, VAR|PAR);
-        if(idx == NO_INDEX)
-          err("Parameter '%s' not declared!", $1);
+        if(idx == NO_INDEX){
+        	idx = lookup_symbol($1, GVAR);
+        	if (idx == NO_INDEX) 
+          	err("'%s' undeclared", $1);
+          else{
+          	code("\n\t\tADDS\t%s,$1,%s",$1,$1);
+          }
+       	}else{
+       		code("\n\t\tADDS\t");
+       		gen_sym_name(idx);
+       		code(",");
+       		code("$1,");
+       		gen_sym_name(idx);
+       	}
       }
 	;
 
@@ -391,8 +403,20 @@ exp
   | _ID _POSTINCREMENT
   {
         $$ = lookup_symbol($1, VAR|PAR);
-        if($$ == NO_INDEX)
-          err("'%s' undeclared", $1);
+        if($$ == NO_INDEX){
+        	$$ = lookup_symbol($1, GVAR);
+        	if ($$ == NO_INDEX) 
+          	err("'%s' undeclared", $1);
+          else{
+          	code("\n\t\tADDS\t%s,$1,%s",$1,$1);
+          }
+       	}else{
+       		code("\n\t\tADDS\t");
+       		gen_sym_name($$);
+       		code(",");
+       		code("$1,");
+       		gen_sym_name($$);
+       	}
   }
   ;
 
