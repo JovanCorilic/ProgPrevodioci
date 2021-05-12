@@ -33,6 +33,7 @@
   int brojPromenljive=-1;
   int ifPartRel_Exp=-1;
   int ifPartPrenos=-1;
+  int komparacijaTemp = -1;
   
 %}
 
@@ -448,28 +449,27 @@ exp
        	}
   }
   | _LPAREN 
-	{
-	  ifPartPrenos = ++lab_num;
-	  code("\n@if%d:", lab_num);
-	}
+  	{
+			komparacijaTemp = take_reg();
+			ifPartPrenos = ++lab_num;
+			code("\n@if%d:", lab_num);
+		}
 		logic_rel_exp _RPAREN _QUESTIONMARK num_exp
-	{
-		$$ = $8;
-	}	
-		 _TWODOTS
-	{
-		code("\n\t\tJMP \t@exit%d", ifPartPrenos);
-	  code("\n@false%d:", ifPartPrenos);
-	}
-		 num_exp
-	{
-		$$ = $12;
-		code("\n\t\tJMP \t@exit%d", ifPartPrenos);
-	}
-			_SEMICOLON
-	{
-	  code("\n@exit%d:", ifPartPrenos);
-	}
+		{
+			gen_mov($6, komparacijaTemp);
+		}	
+		_TWODOTS
+		{
+			code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+			code("\n@false%d:", ifPartPrenos);
+		}
+		num_exp
+		{
+			gen_mov($10, komparacijaTemp);
+			code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+			code("\n@exit%d:", ifPartPrenos);
+			$$ = komparacijaTemp;
+		}
   ;
 
 literal

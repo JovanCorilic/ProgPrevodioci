@@ -14,11 +14,10 @@ int main() {
   x = x + 1;
   x++;
   x = x++ + 1;
-  if ( x >= 0){
-  	x++;
-  }
+  
+  x = [a < y) ? y : 0;
 		
-  return a + x;
+  
 }
 
 
