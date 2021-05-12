@@ -1,7 +1,3 @@
-State 85 conflicts: 1 shift/reduce
-State 143 conflicts: 1 shift/reduce
-
-
 Grammar
 
     0 $accept: program $end
@@ -94,39 +90,37 @@ Grammar
 
    55 $@11: %empty
 
-   56 $@12: %empty
+   56 exp: _LBRACKET $@9 logic_rel_exp _RBRACKET _QUESTIONMARK exp $@10 _TWODOTS $@11 exp
 
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN _QUESTIONMARK num_exp $@10 _TWODOTS $@11 num_exp $@12
+   57 literal: _INT_NUMBER
+   58        | _UINT_NUMBER
 
-   58 literal: _INT_NUMBER
-   59        | _UINT_NUMBER
+   59 function_statement: function_call _SEMICOLON
 
-   60 function_statement: function_call _SEMICOLON
+   60 $@12: %empty
 
-   61 $@13: %empty
+   61 function_call: _ID $@12 _LPAREN argument _RPAREN
 
-   62 function_call: _ID $@13 _LPAREN argument _RPAREN
+   62 argument: %empty
+   63         | num_exp
+   64         | argument _COMMA num_exp
 
-   63 argument: %empty
-   64         | num_exp
-   65         | argument _COMMA num_exp
+   65 if_statement: if_part
+   66             | if_part _ELSE statement
 
-   66 if_statement: if_part
-   67             | if_part _ELSE statement
+   67 @13: %empty
 
-   68 @14: %empty
+   68 if_part: _IF _LPAREN @13 logic_rel_exp _RPAREN statement
 
-   69 if_part: _IF _LPAREN @14 logic_rel_exp _RPAREN statement
+   69 logic_rel_exp: rel_exp
+   70              | logic_rel_exp _LOGICOPER rel_exp
 
-   70 logic_rel_exp: rel_exp
-   71              | logic_rel_exp _LOGICOPER rel_exp
+   71 rel_exp: num_exp _RELOP num_exp
 
-   72 rel_exp: num_exp _RELOP num_exp
+   72 while_statement: _WHILE _LPAREN logic_rel_exp _RPAREN statement
 
-   73 while_statement: _WHILE _LPAREN logic_rel_exp _RPAREN statement
-
-   74 return_statement: _RETURN num_exp _SEMICOLON
-   75                 | _RETURN _SEMICOLON
+   73 return_statement: _RETURN num_exp _SEMICOLON
+   74                 | _RETURN _SEMICOLON
 
 
 Terminals, with rules where they appear
@@ -134,24 +128,24 @@ Terminals, with rules where they appear
     $end (0) 0
     error (256)
     _TYPE <i> (258) 5 7 12 19
-    _IF (259) 69
-    _ELSE (260) 67
-    _RETURN (261) 74 75
-    _ID <s> (262) 5 7 12 20 21 35 36 37 39 41 42 45 49 52 62
-    _INT_NUMBER <s> (263) 58
-    _UINT_NUMBER <s> (264) 59
-    _LPAREN (265) 7 35 41 51 62 69 73
-    _RPAREN (266) 7 35 41 51 57 62 69 73
-    _LBRACKET (267) 15 44
-    _RBRACKET (268) 15 44
+    _IF (259) 68
+    _ELSE (260) 66
+    _RETURN (261) 73 74
+    _ID <s> (262) 5 7 12 20 21 35 36 37 39 41 42 45 49 52 61
+    _INT_NUMBER <s> (263) 57
+    _UINT_NUMBER <s> (264) 58
+    _LPAREN (265) 7 35 41 51 61 68 72
+    _RPAREN (266) 7 35 41 51 61 68 72
+    _LBRACKET (267) 15 44 56
+    _RBRACKET (268) 15 44 56
     _ASSIGN (269) 45
-    _SEMICOLON (270) 5 19 35 42 45 60 74 75
+    _SEMICOLON (270) 5 19 35 42 45 59 73 74
     _AROP <i> (271) 47
-    _RELOP <i> (272) 72
-    _COMMA (273) 11 21 37 41 65
+    _RELOP <i> (272) 71
+    _COMMA (273) 11 21 37 41 64
     _POSTINCREMENT <i> (274) 42 52
-    _WHILE (275) 73
-    _LOGICOPER (276) 71
+    _WHILE (275) 72
+    _LOGICOPER (276) 70
     _LOOP (277) 41
     _BRANCH (278) 39
     _LSQUAREBRACKET (279) 39
@@ -164,8 +158,8 @@ Terminals, with rules where they appear
     _SELECT (286) 35
     _FROM (287) 35
     _WHERE (288) 35
-    _QUESTIONMARK (289) 57
-    _TWODOTS (290) 57
+    _QUESTIONMARK (289) 56
+    _TWODOTS (290) 56
     ONLY_IF (291)
 
 
@@ -223,7 +217,7 @@ Nonterminals, with rules where they appear
         on right: 15 23 44
     statement (54)
         on left: 24 25 26 27 28 29 30 31 32 33
-        on right: 23 39 41 67 69 73
+        on right: 23 39 41 66 68 72
     select_statement (55)
         on left: 35
         on right: 33
@@ -259,57 +253,54 @@ Nonterminals, with rules where they appear
         on right: 25
     num_exp <i> (66)
         on left: 46 47
-        on right: 45 47 51 57 64 65 72 74
+        on right: 45 47 51 63 64 71 73
     exp <i> (67)
-        on left: 48 49 50 51 52 57
-        on right: 46 47
+        on left: 48 49 50 51 52 56
+        on right: 46 47 56
     $@9 (68)
         on left: 53
-        on right: 57
+        on right: 56
     $@10 (69)
         on left: 54
-        on right: 57
+        on right: 56
     $@11 (70)
         on left: 55
-        on right: 57
-    $@12 (71)
-        on left: 56
-        on right: 57
-    literal <i> (72)
-        on left: 58 59
+        on right: 56
+    literal <i> (71)
+        on left: 57 58
         on right: 39 41 48
-    function_statement (73)
-        on left: 60
+    function_statement (72)
+        on left: 59
         on right: 32
-    function_call <i> (74)
-        on left: 62
-        on right: 50 60
-    $@13 (75)
+    function_call <i> (73)
         on left: 61
-        on right: 62
-    argument <i> (76)
-        on left: 63 64 65
-        on right: 62 65
-    if_statement (77)
-        on left: 66 67
+        on right: 50 59
+    $@12 (74)
+        on left: 60
+        on right: 61
+    argument <i> (75)
+        on left: 62 63 64
+        on right: 61 64
+    if_statement (76)
+        on left: 65 66
         on right: 26
-    if_part <i> (78)
-        on left: 69
-        on right: 66 67
-    @14 (79)
+    if_part <i> (77)
         on left: 68
-        on right: 69
-    logic_rel_exp (80)
-        on left: 70 71
-        on right: 35 57 69 71 73
-    rel_exp <i> (81)
+        on right: 65 66
+    @13 (78)
+        on left: 67
+        on right: 68
+    logic_rel_exp (79)
+        on left: 69 70
+        on right: 35 56 68 70 72
+    rel_exp <i> (80)
+        on left: 71
+        on right: 69 70
+    while_statement (81)
         on left: 72
-        on right: 70 71
-    while_statement (82)
-        on left: 73
         on right: 29
-    return_statement (83)
-        on left: 74 75
+    return_statement (82)
+        on left: 73 74
         on right: 27
 
 
@@ -595,21 +586,21 @@ State 29
 
 State 30
 
-   69 if_part: _IF . _LPAREN @14 logic_rel_exp _RPAREN statement
+   68 if_part: _IF . _LPAREN @13 logic_rel_exp _RPAREN statement
 
     _LPAREN  shift, and go to state 54
 
 
 State 31
 
-   74 return_statement: _RETURN . num_exp _SEMICOLON
-   75                 | _RETURN . _SEMICOLON
+   73 return_statement: _RETURN . num_exp _SEMICOLON
+   74                 | _RETURN . _SEMICOLON
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
     _SEMICOLON    shift, and go to state 60
 
     num_exp        go to state 61
@@ -622,14 +613,14 @@ State 32
 
    42 postincrement_statement: _ID . _POSTINCREMENT _SEMICOLON
    45 assignment_statement: _ID . _ASSIGN num_exp _SEMICOLON
-   62 function_call: _ID . $@13 _LPAREN argument _RPAREN
+   61 function_call: _ID . $@12 _LPAREN argument _RPAREN
 
     _ASSIGN         shift, and go to state 65
     _POSTINCREMENT  shift, and go to state 66
 
-    $default  reduce using rule 61 ($@13)
+    $default  reduce using rule 60 ($@12)
 
-    $@13  go to state 67
+    $@12  go to state 67
 
 
 State 33
@@ -650,7 +641,7 @@ State 34
 
 State 35
 
-   73 while_statement: _WHILE . _LPAREN logic_rel_exp _RPAREN statement
+   72 while_statement: _WHILE . _LPAREN logic_rel_exp _RPAREN statement
 
     _LPAREN  shift, and go to state 69
 
@@ -736,7 +727,7 @@ State 46
 
 State 47
 
-   60 function_statement: function_call . _SEMICOLON
+   59 function_statement: function_call . _SEMICOLON
 
     _SEMICOLON  shift, and go to state 74
 
@@ -750,12 +741,12 @@ State 48
 
 State 49
 
-   66 if_statement: if_part .
-   67             | if_part . _ELSE statement
+   65 if_statement: if_part .
+   66             | if_part . _ELSE statement
 
     _ELSE  shift, and go to state 75
 
-    $default  reduce using rule 66 (if_statement)
+    $default  reduce using rule 65 (if_statement)
 
 
 State 50
@@ -788,39 +779,39 @@ State 53
 
 State 54
 
-   69 if_part: _IF _LPAREN . @14 logic_rel_exp _RPAREN statement
+   68 if_part: _IF _LPAREN . @13 logic_rel_exp _RPAREN statement
 
-    $default  reduce using rule 68 (@14)
+    $default  reduce using rule 67 (@13)
 
-    @14  go to state 77
+    @13  go to state 77
 
 
 State 55
 
    49 exp: _ID .
    52    | _ID . _POSTINCREMENT
-   62 function_call: _ID . $@13 _LPAREN argument _RPAREN
+   61 function_call: _ID . $@12 _LPAREN argument _RPAREN
 
     _POSTINCREMENT  shift, and go to state 78
 
-    _LPAREN   reduce using rule 61 ($@13)
+    _LPAREN   reduce using rule 60 ($@12)
     $default  reduce using rule 49 (exp)
 
-    $@13  go to state 67
+    $@12  go to state 67
 
 
 State 56
 
-   58 literal: _INT_NUMBER .
+   57 literal: _INT_NUMBER .
 
-    $default  reduce using rule 58 (literal)
+    $default  reduce using rule 57 (literal)
 
 
 State 57
 
-   59 literal: _UINT_NUMBER .
+   58 literal: _UINT_NUMBER .
 
-    $default  reduce using rule 59 (literal)
+    $default  reduce using rule 58 (literal)
 
 
 State 58
@@ -831,7 +822,7 @@ State 58
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 79
     exp            go to state 62
@@ -841,7 +832,7 @@ State 58
 
 State 59
 
-   57 exp: _RPAREN . $@9 logic_rel_exp _RPAREN _QUESTIONMARK num_exp $@10 _TWODOTS $@11 num_exp $@12
+   56 exp: _LBRACKET . $@9 logic_rel_exp _RBRACKET _QUESTIONMARK exp $@10 _TWODOTS $@11 exp
 
     $default  reduce using rule 53 ($@9)
 
@@ -850,15 +841,15 @@ State 59
 
 State 60
 
-   75 return_statement: _RETURN _SEMICOLON .
+   74 return_statement: _RETURN _SEMICOLON .
 
-    $default  reduce using rule 75 (return_statement)
+    $default  reduce using rule 74 (return_statement)
 
 
 State 61
 
    47 num_exp: num_exp . _AROP exp
-   74 return_statement: _RETURN num_exp . _SEMICOLON
+   73 return_statement: _RETURN num_exp . _SEMICOLON
 
     _SEMICOLON  shift, and go to state 81
     _AROP       shift, and go to state 82
@@ -893,7 +884,7 @@ State 65
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 83
     exp            go to state 62
@@ -910,7 +901,7 @@ State 66
 
 State 67
 
-   62 function_call: _ID $@13 . _LPAREN argument _RPAREN
+   61 function_call: _ID $@12 . _LPAREN argument _RPAREN
 
     _LPAREN  shift, and go to state 85
 
@@ -926,13 +917,13 @@ State 68
 
 State 69
 
-   73 while_statement: _WHILE _LPAREN . logic_rel_exp _RPAREN statement
+   72 while_statement: _WHILE _LPAREN . logic_rel_exp _RPAREN statement
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 87
     exp            go to state 62
@@ -974,14 +965,14 @@ State 73
 
 State 74
 
-   60 function_statement: function_call _SEMICOLON .
+   59 function_statement: function_call _SEMICOLON .
 
-    $default  reduce using rule 60 (function_statement)
+    $default  reduce using rule 59 (function_statement)
 
 
 State 75
 
-   67 if_statement: if_part _ELSE . statement
+   66 if_statement: if_part _ELSE . statement
 
     _IF        shift, and go to state 30
     _RETURN    shift, and go to state 31
@@ -1016,13 +1007,13 @@ State 76
 
 State 77
 
-   69 if_part: _IF _LPAREN @14 . logic_rel_exp _RPAREN statement
+   68 if_part: _IF _LPAREN @13 . logic_rel_exp _RPAREN statement
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 87
     exp            go to state 62
@@ -1050,13 +1041,13 @@ State 79
 
 State 80
 
-   57 exp: _RPAREN $@9 . logic_rel_exp _RPAREN _QUESTIONMARK num_exp $@10 _TWODOTS $@11 num_exp $@12
+   56 exp: _LBRACKET $@9 . logic_rel_exp _RBRACKET _QUESTIONMARK exp $@10 _TWODOTS $@11 exp
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 87
     exp            go to state 62
@@ -1068,9 +1059,9 @@ State 80
 
 State 81
 
-   74 return_statement: _RETURN num_exp _SEMICOLON .
+   73 return_statement: _RETURN num_exp _SEMICOLON .
 
-    $default  reduce using rule 74 (return_statement)
+    $default  reduce using rule 73 (return_statement)
 
 
 State 82
@@ -1081,7 +1072,7 @@ State 82
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     exp            go to state 98
     literal        go to state 63
@@ -1106,16 +1097,15 @@ State 84
 
 State 85
 
-   62 function_call: _ID $@13 _LPAREN . argument _RPAREN
+   61 function_call: _ID $@12 _LPAREN . argument _RPAREN
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
-    _RPAREN   [reduce using rule 63 (argument)]
-    $default  reduce using rule 63 (argument)
+    $default  reduce using rule 62 (argument)
 
     num_exp        go to state 100
     exp            go to state 62
@@ -1140,7 +1130,7 @@ State 86
 State 87
 
    47 num_exp: num_exp . _AROP exp
-   72 rel_exp: num_exp . _RELOP num_exp
+   71 rel_exp: num_exp . _RELOP num_exp
 
     _AROP   shift, and go to state 82
     _RELOP  shift, and go to state 103
@@ -1148,8 +1138,8 @@ State 87
 
 State 88
 
-   71 logic_rel_exp: logic_rel_exp . _LOGICOPER rel_exp
-   73 while_statement: _WHILE _LPAREN logic_rel_exp . _RPAREN statement
+   70 logic_rel_exp: logic_rel_exp . _LOGICOPER rel_exp
+   72 while_statement: _WHILE _LPAREN logic_rel_exp . _RPAREN statement
 
     _RPAREN     shift, and go to state 104
     _LOGICOPER  shift, and go to state 105
@@ -1157,9 +1147,9 @@ State 88
 
 State 89
 
-   70 logic_rel_exp: rel_exp .
+   69 logic_rel_exp: rel_exp .
 
-    $default  reduce using rule 70 (logic_rel_exp)
+    $default  reduce using rule 69 (logic_rel_exp)
 
 
 State 90
@@ -1192,15 +1182,15 @@ State 93
 
 State 94
 
-   67 if_statement: if_part _ELSE statement .
+   66 if_statement: if_part _ELSE statement .
 
-    $default  reduce using rule 67 (if_statement)
+    $default  reduce using rule 66 (if_statement)
 
 
 State 95
 
-   69 if_part: _IF _LPAREN @14 logic_rel_exp . _RPAREN statement
-   71 logic_rel_exp: logic_rel_exp . _LOGICOPER rel_exp
+   68 if_part: _IF _LPAREN @13 logic_rel_exp . _RPAREN statement
+   70 logic_rel_exp: logic_rel_exp . _LOGICOPER rel_exp
 
     _RPAREN     shift, and go to state 110
     _LOGICOPER  shift, and go to state 105
@@ -1215,10 +1205,10 @@ State 96
 
 State 97
 
-   57 exp: _RPAREN $@9 logic_rel_exp . _RPAREN _QUESTIONMARK num_exp $@10 _TWODOTS $@11 num_exp $@12
-   71 logic_rel_exp: logic_rel_exp . _LOGICOPER rel_exp
+   56 exp: _LBRACKET $@9 logic_rel_exp . _RBRACKET _QUESTIONMARK exp $@10 _TWODOTS $@11 exp
+   70 logic_rel_exp: logic_rel_exp . _LOGICOPER rel_exp
 
-    _RPAREN     shift, and go to state 111
+    _RBRACKET   shift, and go to state 111
     _LOGICOPER  shift, and go to state 105
 
 
@@ -1239,17 +1229,17 @@ State 99
 State 100
 
    47 num_exp: num_exp . _AROP exp
-   64 argument: num_exp .
+   63 argument: num_exp .
 
     _AROP  shift, and go to state 82
 
-    $default  reduce using rule 64 (argument)
+    $default  reduce using rule 63 (argument)
 
 
 State 101
 
-   62 function_call: _ID $@13 _LPAREN argument . _RPAREN
-   65 argument: argument . _COMMA num_exp
+   61 function_call: _ID $@12 _LPAREN argument . _RPAREN
+   64 argument: argument . _COMMA num_exp
 
     _RPAREN  shift, and go to state 112
     _COMMA   shift, and go to state 113
@@ -1287,13 +1277,13 @@ State 102
 
 State 103
 
-   72 rel_exp: num_exp _RELOP . num_exp
+   71 rel_exp: num_exp _RELOP . num_exp
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 115
     exp            go to state 62
@@ -1303,7 +1293,7 @@ State 103
 
 State 104
 
-   73 while_statement: _WHILE _LPAREN logic_rel_exp _RPAREN . statement
+   72 while_statement: _WHILE _LPAREN logic_rel_exp _RPAREN . statement
 
     _IF        shift, and go to state 30
     _RETURN    shift, and go to state 31
@@ -1331,13 +1321,13 @@ State 104
 
 State 105
 
-   71 logic_rel_exp: logic_rel_exp _LOGICOPER . rel_exp
+   70 logic_rel_exp: logic_rel_exp _LOGICOPER . rel_exp
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 87
     exp            go to state 62
@@ -1384,7 +1374,7 @@ State 109
 
 State 110
 
-   69 if_part: _IF _LPAREN @14 logic_rel_exp _RPAREN . statement
+   68 if_part: _IF _LPAREN @13 logic_rel_exp _RPAREN . statement
 
     _IF        shift, and go to state 30
     _RETURN    shift, and go to state 31
@@ -1412,27 +1402,27 @@ State 110
 
 State 111
 
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN . _QUESTIONMARK num_exp $@10 _TWODOTS $@11 num_exp $@12
+   56 exp: _LBRACKET $@9 logic_rel_exp _RBRACKET . _QUESTIONMARK exp $@10 _TWODOTS $@11 exp
 
     _QUESTIONMARK  shift, and go to state 122
 
 
 State 112
 
-   62 function_call: _ID $@13 _LPAREN argument _RPAREN .
+   61 function_call: _ID $@12 _LPAREN argument _RPAREN .
 
-    $default  reduce using rule 62 (function_call)
+    $default  reduce using rule 61 (function_call)
 
 
 State 113
 
-   65 argument: argument _COMMA . num_exp
+   64 argument: argument _COMMA . num_exp
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 123
     exp            go to state 62
@@ -1450,25 +1440,25 @@ State 114
 State 115
 
    47 num_exp: num_exp . _AROP exp
-   72 rel_exp: num_exp _RELOP num_exp .
+   71 rel_exp: num_exp _RELOP num_exp .
 
     _AROP  shift, and go to state 82
 
-    $default  reduce using rule 72 (rel_exp)
+    $default  reduce using rule 71 (rel_exp)
 
 
 State 116
 
-   73 while_statement: _WHILE _LPAREN logic_rel_exp _RPAREN statement .
+   72 while_statement: _WHILE _LPAREN logic_rel_exp _RPAREN statement .
 
-    $default  reduce using rule 73 (while_statement)
+    $default  reduce using rule 72 (while_statement)
 
 
 State 117
 
-   71 logic_rel_exp: logic_rel_exp _LOGICOPER rel_exp .
+   70 logic_rel_exp: logic_rel_exp _LOGICOPER rel_exp .
 
-    $default  reduce using rule 71 (logic_rel_exp)
+    $default  reduce using rule 70 (logic_rel_exp)
 
 
 State 118
@@ -1494,23 +1484,22 @@ State 120
 
 State 121
 
-   69 if_part: _IF _LPAREN @14 logic_rel_exp _RPAREN statement .
+   68 if_part: _IF _LPAREN @13 logic_rel_exp _RPAREN statement .
 
-    $default  reduce using rule 69 (if_part)
+    $default  reduce using rule 68 (if_part)
 
 
 State 122
 
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN _QUESTIONMARK . num_exp $@10 _TWODOTS $@11 num_exp $@12
+   56 exp: _LBRACKET $@9 logic_rel_exp _RBRACKET _QUESTIONMARK . exp $@10 _TWODOTS $@11 exp
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
-    num_exp        go to state 127
-    exp            go to state 62
+    exp            go to state 127
     literal        go to state 63
     function_call  go to state 64
 
@@ -1518,11 +1507,11 @@ State 122
 State 123
 
    47 num_exp: num_exp . _AROP exp
-   65 argument: argument _COMMA num_exp .
+   64 argument: argument _COMMA num_exp .
 
     _AROP  shift, and go to state 82
 
-    $default  reduce using rule 65 (argument)
+    $default  reduce using rule 64 (argument)
 
 
 State 124
@@ -1554,10 +1543,7 @@ State 126
 
 State 127
 
-   47 num_exp: num_exp . _AROP exp
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN _QUESTIONMARK num_exp . $@10 _TWODOTS $@11 num_exp $@12
-
-    _AROP  shift, and go to state 82
+   56 exp: _LBRACKET $@9 logic_rel_exp _RBRACKET _QUESTIONMARK exp . $@10 _TWODOTS $@11 exp
 
     $default  reduce using rule 54 ($@10)
 
@@ -1586,7 +1572,7 @@ State 130
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
     num_exp        go to state 87
     exp            go to state 62
@@ -1598,7 +1584,7 @@ State 130
 
 State 131
 
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN _QUESTIONMARK num_exp $@10 . _TWODOTS $@11 num_exp $@12
+   56 exp: _LBRACKET $@9 logic_rel_exp _RBRACKET _QUESTIONMARK exp $@10 . _TWODOTS $@11 exp
 
     _TWODOTS  shift, and go to state 135
 
@@ -1626,7 +1612,7 @@ State 133
 State 134
 
    35 select_statement: _SELECT multi_vars _FROM _ID $@5 _WHERE _LPAREN logic_rel_exp . _RPAREN _SEMICOLON
-   71 logic_rel_exp: logic_rel_exp . _LOGICOPER rel_exp
+   70 logic_rel_exp: logic_rel_exp . _LOGICOPER rel_exp
 
     _RPAREN     shift, and go to state 138
     _LOGICOPER  shift, and go to state 105
@@ -1634,7 +1620,7 @@ State 134
 
 State 135
 
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN _QUESTIONMARK num_exp $@10 _TWODOTS . $@11 num_exp $@12
+   56 exp: _LBRACKET $@9 logic_rel_exp _RBRACKET _QUESTIONMARK exp $@10 _TWODOTS . $@11 exp
 
     $default  reduce using rule 55 ($@11)
 
@@ -1664,16 +1650,15 @@ State 138
 
 State 139
 
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN _QUESTIONMARK num_exp $@10 _TWODOTS $@11 . num_exp $@12
+   56 exp: _LBRACKET $@9 logic_rel_exp _RBRACKET _QUESTIONMARK exp $@10 _TWODOTS $@11 . exp
 
     _ID           shift, and go to state 55
     _INT_NUMBER   shift, and go to state 56
     _UINT_NUMBER  shift, and go to state 57
     _LPAREN       shift, and go to state 58
-    _RPAREN       shift, and go to state 59
+    _LBRACKET     shift, and go to state 59
 
-    num_exp        go to state 143
-    exp            go to state 62
+    exp            go to state 143
     literal        go to state 63
     function_call  go to state 64
 
@@ -1705,15 +1690,9 @@ State 142
 
 State 143
 
-   47 num_exp: num_exp . _AROP exp
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN _QUESTIONMARK num_exp $@10 _TWODOTS $@11 num_exp . $@12
+   56 exp: _LBRACKET $@9 logic_rel_exp _RBRACKET _QUESTIONMARK exp $@10 _TWODOTS $@11 exp .
 
-    _AROP  shift, and go to state 82
-
-    _AROP     [reduce using rule 56 ($@12)]
-    $default  reduce using rule 56 ($@12)
-
-    $@12  go to state 146
+    $default  reduce using rule 56 (exp)
 
 
 State 144
@@ -1729,7 +1708,7 @@ State 144
     _BRANCH    shift, and go to state 37
     _SELECT    shift, and go to state 38
 
-    statement                go to state 147
+    statement                go to state 146
     select_statement         go to state 40
     branch_statement         go to state 41
     loop_statement           go to state 42
@@ -1748,31 +1727,24 @@ State 145
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 . _ONE _ARROW statement _TWO _ARROW statement _THREE _ARROW statement _OTHER _ARROW statement
 
-    _ONE  shift, and go to state 148
+    _ONE  shift, and go to state 147
 
 
 State 146
-
-   57 exp: _RPAREN $@9 logic_rel_exp _RPAREN _QUESTIONMARK num_exp $@10 _TWODOTS $@11 num_exp $@12 .
-
-    $default  reduce using rule 57 (exp)
-
-
-State 147
 
    41 loop_statement: _LOOP _LPAREN _ID _COMMA literal _COMMA literal _COMMA literal _RPAREN $@7 statement .
 
     $default  reduce using rule 41 (loop_statement)
 
 
-State 148
+State 147
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE . _ARROW statement _TWO _ARROW statement _THREE _ARROW statement _OTHER _ARROW statement
 
-    _ARROW  shift, and go to state 149
+    _ARROW  shift, and go to state 148
 
 
-State 149
+State 148
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW . statement _TWO _ARROW statement _THREE _ARROW statement _OTHER _ARROW statement
 
@@ -1785,7 +1757,7 @@ State 149
     _BRANCH    shift, and go to state 37
     _SELECT    shift, and go to state 38
 
-    statement                go to state 150
+    statement                go to state 149
     select_statement         go to state 40
     branch_statement         go to state 41
     loop_statement           go to state 42
@@ -1800,21 +1772,21 @@ State 149
     return_statement         go to state 51
 
 
-State 150
+State 149
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement . _TWO _ARROW statement _THREE _ARROW statement _OTHER _ARROW statement
 
-    _TWO  shift, and go to state 151
+    _TWO  shift, and go to state 150
 
 
-State 151
+State 150
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO . _ARROW statement _THREE _ARROW statement _OTHER _ARROW statement
 
-    _ARROW  shift, and go to state 152
+    _ARROW  shift, and go to state 151
 
 
-State 152
+State 151
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO _ARROW . statement _THREE _ARROW statement _OTHER _ARROW statement
 
@@ -1827,7 +1799,7 @@ State 152
     _BRANCH    shift, and go to state 37
     _SELECT    shift, and go to state 38
 
-    statement                go to state 153
+    statement                go to state 152
     select_statement         go to state 40
     branch_statement         go to state 41
     loop_statement           go to state 42
@@ -1842,21 +1814,21 @@ State 152
     return_statement         go to state 51
 
 
-State 153
+State 152
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO _ARROW statement . _THREE _ARROW statement _OTHER _ARROW statement
 
-    _THREE  shift, and go to state 154
+    _THREE  shift, and go to state 153
 
 
-State 154
+State 153
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO _ARROW statement _THREE . _ARROW statement _OTHER _ARROW statement
 
-    _ARROW  shift, and go to state 155
+    _ARROW  shift, and go to state 154
 
 
-State 155
+State 154
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO _ARROW statement _THREE _ARROW . statement _OTHER _ARROW statement
 
@@ -1869,7 +1841,7 @@ State 155
     _BRANCH    shift, and go to state 37
     _SELECT    shift, and go to state 38
 
-    statement                go to state 156
+    statement                go to state 155
     select_statement         go to state 40
     branch_statement         go to state 41
     loop_statement           go to state 42
@@ -1884,21 +1856,21 @@ State 155
     return_statement         go to state 51
 
 
-State 156
+State 155
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO _ARROW statement _THREE _ARROW statement . _OTHER _ARROW statement
 
-    _OTHER  shift, and go to state 157
+    _OTHER  shift, and go to state 156
 
 
-State 157
+State 156
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO _ARROW statement _THREE _ARROW statement _OTHER . _ARROW statement
 
-    _ARROW  shift, and go to state 158
+    _ARROW  shift, and go to state 157
 
 
-State 158
+State 157
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO _ARROW statement _THREE _ARROW statement _OTHER _ARROW . statement
 
@@ -1911,7 +1883,7 @@ State 158
     _BRANCH    shift, and go to state 37
     _SELECT    shift, and go to state 38
 
-    statement                go to state 159
+    statement                go to state 158
     select_statement         go to state 40
     branch_statement         go to state 41
     loop_statement           go to state 42
@@ -1926,7 +1898,7 @@ State 158
     return_statement         go to state 51
 
 
-State 159
+State 158
 
    39 branch_statement: _BRANCH _LSQUAREBRACKET _ID _ARROW literal _ARROW literal _ARROW literal _RSQUAREBRACKET $@6 _ONE _ARROW statement _TWO _ARROW statement _THREE _ARROW statement _OTHER _ARROW statement .
 

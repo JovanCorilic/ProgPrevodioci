@@ -428,6 +428,7 @@ exp
 		      $$ = take_reg();
 		      gen_mov(FUN_REG, $$);
 		}
+		
   | _LPAREN num_exp _RPAREN
       { $$ = $2; }
   | _ID _POSTINCREMENT
@@ -448,13 +449,14 @@ exp
        		gen_sym_name($$);
        	}
   }
-  | _LPAREN 
+  | _LBRACKET 
   	{
 			komparacijaTemp = take_reg();
 			ifPartPrenos = ++lab_num;
+			
 			code("\n@if%d:", lab_num);
 		}
-		logic_rel_exp _RPAREN _QUESTIONMARK num_exp
+		logic_rel_exp _RBRACKET _QUESTIONMARK exp
 		{
 			gen_mov($6, komparacijaTemp);
 		}	
@@ -463,7 +465,7 @@ exp
 			code("\n\t\tJMP \t@exit%d", ifPartPrenos);
 			code("\n@false%d:", ifPartPrenos);
 		}
-		num_exp
+		exp
 		{
 			gen_mov($10, komparacijaTemp);
 			code("\n\t\tJMP \t@exit%d", ifPartPrenos);
