@@ -80,7 +80,9 @@ extern int yydebug;
     _SELECT = 286,
     _FROM = 287,
     _WHERE = 288,
-    ONLY_IF = 289
+    _QUESTIONMARK = 289,
+    _TWODOTS = 290,
+    ONLY_IF = 291
   };
 #endif
 
@@ -93,7 +95,7 @@ union YYSTYPE
   int i;
   char *s;
 
-#line 97 "micko.tab.h"
+#line 99 "micko.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

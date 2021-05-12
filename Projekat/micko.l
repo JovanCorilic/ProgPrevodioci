@@ -49,6 +49,8 @@
 ">="                 { yylval.i = GE; return _RELOP; }
 "=="                 { yylval.i = EQ; return _RELOP; }
 "!="                 { yylval.i = NE; return _RELOP; }
+"?"		{return _QUESTIONMARK;}
+":"		{return _TWODOTS;}
 
 "and"		{return _LOGICOPER;}
 "or"		{return _LOGICOPER;}

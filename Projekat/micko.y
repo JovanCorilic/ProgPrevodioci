@@ -72,6 +72,8 @@
 %token _SELECT
 %token _FROM
 %token _WHERE
+%token _QUESTIONMARK
+%token _TWODOTS
 
 %type <i> num_exp exp literal
 %type <i> function_call argument rel_exp if_part
@@ -256,6 +258,8 @@ statement
   | function_statement
   | select_statement
   ;
+  
+
   
 select_statement
 	:	_SELECT multi_vars _FROM _ID
@@ -443,6 +447,29 @@ exp
        		gen_sym_name($$);
        	}
   }
+  | _LPAREN 
+	{
+	  ifPartPrenos = ++lab_num;
+	  code("\n@if%d:", lab_num);
+	}
+		logic_rel_exp _RPAREN _QUESTIONMARK num_exp
+	{
+		$$ = $8;
+	}	
+		 _TWODOTS
+	{
+		code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+	  code("\n@false%d:", ifPartPrenos);
+	}
+		 num_exp
+	{
+		$$ = $12;
+		code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+	}
+			_SEMICOLON
+	{
+	  code("\n@exit%d:", ifPartPrenos);
+	}
   ;
 
 literal

@@ -20,7 +20,7 @@ main:
 		MOV 	%0,-8(%14)
 @if1:
 		CMPS 	-8(%14),$0
-		JGEU	@false1
+		JLTU	@false1
 @true1:
 		ADDS	-8(%14),$1,-8(%14)
 		JMP 	@exit1
