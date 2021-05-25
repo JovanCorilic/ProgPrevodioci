@@ -317,12 +317,40 @@ branch_statement
 					if(idx == NO_INDEX)
           	err("Parameter '%s' not declared!", $3);
       }
-    int temp = lookup_symbol($3, VAR|PAR);
+    int temp = idx;
    
     if(get_type(temp) != get_type($5) || get_type(temp) != get_type($7) || get_type(temp) != get_type($9))
           err("Parameter and konstant are not the same type");
+    ifPartPrenos = ++lab_num;
+    code("\n@branch%d:", lab_num);
+    int nesto = 4 + ((get_type(idx) - 1) * RELOP_NUMBER);
+    gen_cmp(idx,$5);
+    code("\n\t\t%s\t@one%d", jumps[nesto], ifPartPrenos);
+    gen_cmp(idx,$7);
+    code("\n\t\t%s\t@two%d", jumps[nesto], ifPartPrenos); 
+    gen_cmp(idx,$9);
+    code("\n\t\t%s\t@three%d", jumps[nesto], ifPartPrenos);
+    code("\n\t\tJMP \t@other%d", ifPartPrenos); 
 	}
-		_ONE _ARROW statement _TWO _ARROW statement _THREE _ARROW statement _OTHER _ARROW statement
+	
+		_ONE
+		{ code("\n@one%d:", ifPartPrenos); }
+		 _ARROW statement
+		{ code("\n\t\tJMP \t@exit%d", ifPartPrenos); } 
+		  _TWO
+		{ code("\n@two%d:", ifPartPrenos); }  
+		 _ARROW statement
+		{ code("\n\t\tJMP \t@exit%d", ifPartPrenos); }
+		 _THREE
+		{ code("\n@three%d:", ifPartPrenos); }
+		 _ARROW statement
+		{ code("\n\t\tJMP \t@exit%d", ifPartPrenos); } 
+		 _OTHER
+		{ code("\n@other%d:", ifPartPrenos); } 
+		 _ARROW statement
+		{ code("\n\t\tJMP \t@exit%d", ifPartPrenos); 
+			code("\n@exit%d:", ifPartPrenos);
+		} 
 	;
   
 loop_statement
