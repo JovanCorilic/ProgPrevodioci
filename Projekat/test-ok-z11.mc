@@ -15,9 +15,9 @@ int main() {
   x++;
   x = x++ + 1;
   
+  x = (a + x) - 1 ;
   
-  
-  x = {a < y} ? (y + 1) : 0;
+  x = (a < y) ? y : 0;
 		
   return 0;
 }

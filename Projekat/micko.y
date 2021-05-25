@@ -34,6 +34,7 @@
   int ifPartRel_Exp=-1;
   int ifPartPrenos=-1;
   int komparacijaTemp = -1;
+  int tempPrenosNumExp = -1;
   
 %}
 
@@ -76,7 +77,7 @@
 %token _QUESTIONMARK
 %token _TWODOTS
 
-%type <i> num_exp exp literal
+%type <i> num_exp exp literal custom_exp
 %type <i> function_call argument rel_exp if_part
 
 %nonassoc ONLY_IF
@@ -429,8 +430,15 @@ exp
 		      gen_mov(FUN_REG, $$);
 		}
 		
-  | _LPAREN num_exp _RPAREN
-      { $$ = $2; }
+  | _LPAREN num_exp
+  	{
+  	tempPrenosNumExp = $2;
+  	}
+   ekstenzija_exp
+      { 
+      $$ = tempPrenosNumExp;
+      
+     	}
   | _ID _POSTINCREMENT
   {
         $$ = lookup_symbol($1, VAR|PAR);
@@ -449,30 +457,87 @@ exp
        		gen_sym_name($$);
        	}
   }
-  | _LBRACKET 
-  	{
-			komparacijaTemp = take_reg();
-			ifPartPrenos = ++lab_num;
-			
-			code("\n@if%d:", lab_num);
-		}
-		logic_rel_exp _RBRACKET _QUESTIONMARK exp
-		{
-			gen_mov($6, komparacijaTemp);
-		}	
-		_TWODOTS
-		{
-			code("\n\t\tJMP \t@exit%d", ifPartPrenos);
-			code("\n@false%d:", ifPartPrenos);
-		}
-		exp
-		{
-			gen_mov($10, komparacijaTemp);
+  ;
+  
+ekstenzija_exp
+	:	_RPAREN
+	| _RELOP num_exp _RPAREN _QUESTIONMARK
+	{
+		komparacijaTemp = take_reg();
+		ifPartPrenos = ++lab_num;
+		code("\n@if%d:", lab_num);
+		if(get_type(tempPrenosNumExp) != get_type($2))
+			err("invalid operands: relational operator");
+		int temp = $1 + ((get_type(tempPrenosNumExp) - 1) * RELOP_NUMBER);
+		gen_cmp(tempPrenosNumExp, $2);
+		code("\n\t\t%s\t@false%d", opp_jumps[temp], ifPartPrenos); 
+    code("\n@true%d:", ifPartPrenos);
+	}
+	 custom_exp
+	 {
+	 	gen_mov($6, komparacijaTemp);
+	 	code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+		code("\n@false%d:", ifPartPrenos);
+	 }
+	  _TWODOTS custom_exp
+	  {
+	  	gen_mov($9, komparacijaTemp);
 			code("\n\t\tJMP \t@exit%d", ifPartPrenos);
 			code("\n@exit%d:", ifPartPrenos);
-			$$ = komparacijaTemp;
-		}
-  ;
+			tempPrenosNumExp = komparacijaTemp;
+	  }
+	;	
+	
+/*custom_num_exp
+	:	custom_exp
+	| custom_num_exp _AROP custom_exp
+	{
+        if(get_type($1) != get_type($3))
+          err("invalid operands: arithmetic operation");
+        int t1 = get_type($1);    
+        code("\n\t\t%s\t", ar_instructions[$2 + (t1 - 1) * AROP_NUMBER]);
+        gen_sym_name($1);
+        code(",");
+        gen_sym_name($3);
+        code(",");
+        free_if_reg($3);
+        free_if_reg($1);
+        $$ = take_reg();
+        gen_sym_name($$);
+        set_type($$, t1);
+      }
+	;
+*/
+custom_exp
+	: literal
+  | _ID
+      {
+        $$ = lookup_symbol($1, VAR|PAR);
+        if($$ == NO_INDEX){
+        	$$ = lookup_symbol($1, GVAR);
+        	if ($$ == NO_INDEX)
+          	err("'%s' undeclared", $1);
+        }
+      }
+  | _ID _POSTINCREMENT
+  {
+        $$ = lookup_symbol($1, VAR|PAR);
+        if($$ == NO_INDEX){
+        	$$ = lookup_symbol($1, GVAR);
+        	if ($$ == NO_INDEX) 
+          	err("'%s' undeclared", $1);
+          else{
+          	code("\n\t\tADDS\t%s,$1,%s",$1,$1);
+          }
+       	}else{
+       		code("\n\t\tADDS\t");
+       		gen_sym_name($$);
+       		code(",");
+       		code("$1,");
+       		gen_sym_name($$);
+       	}
+  }
+	;
 
 literal
   : _INT_NUMBER
