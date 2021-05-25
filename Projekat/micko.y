@@ -35,6 +35,7 @@
   int ifPartPrenos=-1;
   int komparacijaTemp = -1;
   int tempPrenosNumExp = -1;
+  int viseLabela = -1;
   
 %}
 
@@ -79,6 +80,7 @@
 
 %type <i> num_exp exp literal custom_exp
 %type <i> function_call argument rel_exp if_part
+%type <s> _LOGICOPER
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -694,6 +696,7 @@ if_part
     $<i>$ = ++lab_num;
     ifPartPrenos = ++lab_num;
     code("\n@if%d:", lab_num);
+    viseLabela = 0;
   }
   logic_rel_exp _RPAREN statement
   {
@@ -713,8 +716,12 @@ logic_rel_exp
 	| logic_rel_exp _LOGICOPER rel_exp
 	{
 		ifPartRel_Exp = $3;
+		viseLabela++;
+		
     code("\n\t\t%s\t@false%d", opp_jumps[$3], ifPartPrenos); 
-    code("\n@true%d:", ifPartPrenos);
+    
+    code("\n@true%d%d:", ifPartPrenos,viseLabela);
+    
   }
 	;
 
@@ -724,6 +731,7 @@ rel_exp
         if(get_type($1) != get_type($3))
           err("invalid operands: relational operator");
         $$ = $2 + ((get_type($1) - 1) * RELOP_NUMBER);
+
         gen_cmp($1, $3);
       }
   ;
