@@ -335,12 +335,56 @@ loop_statement
 				if(idx == NO_INDEX)
         	err("Parameter '%s' not declared!", $3);
     }
-    int temp = lookup_symbol($3, VAR|PAR);
+    
    
-    if(get_type(temp) != get_type($5) || get_type(temp) != get_type($7) || get_type(temp) != get_type($9))
+    if(get_type(idx) != get_type($5) || get_type(idx) != get_type($7) || get_type(idx) != get_type($9))
           err("Parameter and literal are not the same type");
+    gen_mov($5,idx);
+    ifPartPrenos = ++lab_num;
+		code("\n@loop%d:", lab_num);
+		int temp = -1;
+		char* drugi = get_name($7);
+		int drugii =strtol(drugi,NULL,10);
+
+		char* prvi = get_name($5);
+		int prvii =strtol(prvi,NULL,10);
+		if(drugii>=prvii){
+			
+			temp = 2+((get_type(idx) - 1) * RELOP_NUMBER);
+		}else if(drugii<prvii){
+			
+			temp = 1+((get_type(idx) - 1) * RELOP_NUMBER);
+		}
+		gen_cmp($7,idx);
+    code("\n\t\t%s\t@exit%d", opp_jumps[temp], ifPartPrenos); 
+		code("\n@true%d:", ifPartPrenos);
 	}
 	statement
+	{
+		int idx = lookup_symbol($3, VAR|PAR);
+		if(idx == NO_INDEX)
+        {
+        idx = lookup_symbol($3, GVAR);
+        }
+    char* drugi = get_name($7);
+		int drugii =strtol(drugi,NULL,10);
+		char* prvi = get_name($5);
+		int prvii =strtol(prvi,NULL,10);
+    if(drugii>=prvii){
+			code("\n\t\tADDU\t");
+		}else if(drugii<prvii){
+			code("\n\t\tSUBU\t");
+		}
+		gen_sym_name(idx);
+		code(",");
+		gen_sym_name($9);
+		code(",");
+		int nesto = take_reg();
+		gen_sym_name(nesto);
+		gen_mov(nesto,idx);
+		code("\n\t\tJMP \t@loop%d", ifPartPrenos);
+		code("\n@exit%d:", ifPartPrenos);
+	}
 	;
   
 postincrement_statement
@@ -657,7 +701,18 @@ rel_exp
   ;
   
 while_statement
-	: _WHILE _LPAREN logic_rel_exp _RPAREN statement
+	: _WHILE _LPAREN
+	{
+		ifPartPrenos = ++lab_num;
+    code("\n@while%d:", lab_num);
+	}
+	 logic_rel_exp _RPAREN statement
+	 {
+	 	code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+    code("\n@false%d:", ifPartPrenos);
+    code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+    code("\n@exit%d:", ifPartPrenos); 
+	 }
 	;
 
 return_statement

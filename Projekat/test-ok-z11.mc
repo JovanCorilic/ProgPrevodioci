@@ -1,25 +1,21 @@
 //OPIS: jedna globalna promenljiva
-//RETURN: 26
+//RETURN: 4
 
 int y;
 
 int main() {
   int a;
   int x;
-  a = 11;
-  x = 13;
-  y = 12;
-  y++;
-  a = a + y;
-  x = x + 1;
-  x++;
-  x = x++ + 1;
+  a = 1;
+  if(a == 1){
+  	x = 0;
+  }
   
-  x = (a + x) - 1 ;
-  
-  x = (a < y) ? y : 0;
+  loop ( a, 5, 1, 1) {
+	x = 0;
+	}
 		
-  return 0;
+  return a;
 }
 
 
