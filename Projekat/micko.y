@@ -79,9 +79,8 @@
 %token _QUESTIONMARK
 %token _TWODOTS
 
-%type <i> num_exp exp literal custom_exp
+%type <i> num_exp exp literal custom_num_exp custom_exp 
 %type <i> function_call argument rel_exp if_part
-%type <s> _LOGICOPER
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -552,13 +551,13 @@ ekstenzija_exp
 		code("\n\t\t%s\t@false%d", opp_jumps[temp], ifPartPrenos); 
     code("\n@true%d:", ifPartPrenos);
 	}
-	 custom_exp
+	 custom_num_exp
 	 {
 	 	gen_mov($6, komparacijaTemp);
 	 	code("\n\t\tJMP \t@exit%d", ifPartPrenos);
 		code("\n@false%d:", ifPartPrenos);
 	 }
-	  _TWODOTS custom_exp
+	  _TWODOTS custom_num_exp
 	  {
 	  	gen_mov($9, komparacijaTemp);
 			code("\n\t\tJMP \t@exit%d", ifPartPrenos);
@@ -568,26 +567,26 @@ ekstenzija_exp
 	  }
 	;	
 	
-/*custom_num_exp
+custom_num_exp
 	:	custom_exp
-	| custom_num_exp _AROP custom_exp
+	| _LPAREN custom_num_exp _AROP custom_exp _RPAREN
 	{
-        if(get_type($1) != get_type($3))
+        if(get_type($2) != get_type($4))
           err("invalid operands: arithmetic operation");
-        int t1 = get_type($1);    
-        code("\n\t\t%s\t", ar_instructions[$2 + (t1 - 1) * AROP_NUMBER]);
-        gen_sym_name($1);
+        int t1 = get_type($2);    
+        code("\n\t\t%s\t", ar_instructions[$3 + (t1 - 1) * AROP_NUMBER]);
+        gen_sym_name($2);
         code(",");
-        gen_sym_name($3);
+        gen_sym_name($4);
         code(",");
-        free_if_reg($3);
-        free_if_reg($1);
+        free_if_reg($4);
+        free_if_reg($2);
         $$ = take_reg();
         gen_sym_name($$);
         set_type($$, t1);
       }
 	;
-*/
+
 custom_exp
 	: literal
   | _ID
