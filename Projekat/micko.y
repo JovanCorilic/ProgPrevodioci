@@ -36,6 +36,7 @@
   int komparacijaTemp = -1;
   int tempPrenosNumExp = -1;
   int viseLabela = -1;
+  int unosLista[SYMBOL_TABLE_LENGTH];
   
 %}
 
@@ -143,6 +144,7 @@ function
         code("\n\t\tPOP \t%%14");
         code("\n\t\tRET");
         
+        
       }
   ;
   
@@ -163,7 +165,7 @@ parameter
       	if($1==VOID)
       		err("Type is void!");
       	
-		    insert_symbol($2, PAR, $1, 1, NO_ATR);
+		    insert_symbol($2, PAR, $1, get_atr1(fun_idx)+1, NO_ATR);
 		    set_atr1(fun_idx, get_atr1(fun_idx)+1);
 		    
 		    brojPromenljive +=1;
@@ -434,6 +436,7 @@ postincrement_statement
        		code(",");
        		code("$1,");
        		gen_sym_name(idx);
+
        	}
       }
 	;
@@ -638,6 +641,12 @@ function_call
         if(get_atr1(fcall_idx) != $4)
           err("wrong number of args to function '%s'", 
               get_name(fcall_idx));
+        int i;
+        for(i=brojPromenljive-1;i>-1;i--){
+        	free_if_reg(unosLista[i]);
+        	code("\n\t\t\tPUSH\t");
+        	gen_sym_name(unosLista[i]);
+        }
         code("\n\t\t\tCALL\t%s", get_name(fcall_idx));
         if($4 > 0)
           code("\n\t\t\tADDS\t%%15,$%d,%%15", $4 * 4);
@@ -665,9 +674,8 @@ argument
 		  if(lista[brojFunkcije][1] != get_type($1))
 		    err("incompatible type for argument in '%s'",
 		        get_name(fcall_idx));
-		  free_if_reg($1);
-      code("\n\t\t\tPUSH\t");
-      gen_sym_name($1);
+      unosLista[0] = $1;
+      
       $$ = 1;
     }
   | argument _COMMA num_exp
@@ -676,9 +684,8 @@ argument
 		  if(lista[brojFunkcije][brojPromenljive] != get_type($3))
 		    err("incompatible type for argument in '%s'",
 		        get_name(fcall_idx));
-		  free_if_reg($3);
-      code("\n\t\t\tPUSH\t");
-      gen_sym_name($3);
+      
+      unosLista[brojPromenljive-1]=$3;
   		$$ = $$ +1;
   }
   ;
