@@ -1,5 +1,5 @@
 //OPIS: vise funkcija - int i unsigned
-//RETURN: 5
+//RETURN: 6
 int main() {
     int k,b;
     int c,d,e,f;

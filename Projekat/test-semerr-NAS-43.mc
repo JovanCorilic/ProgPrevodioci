@@ -12,7 +12,7 @@ int main() {
 	int b;
 	int c;
 
-	c = f++  + b + c + 5;
+	f++;
 	return 0;
 }
 

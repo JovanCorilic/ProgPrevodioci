@@ -1,5 +1,5 @@
 //OPIS: jedna deklaracija sa tri promenljive, inkrementacija , primer loop
-//RETURN: 6
+//RETURN: 7
 int main() {
     unsigned a,b,c,d;
     int g;

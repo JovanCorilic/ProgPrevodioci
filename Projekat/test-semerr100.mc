@@ -1,7 +1,13 @@
 //OPIS: uslovni izraz semanticka greska
+
+int function(int a){
+	return a;
+}
+
 void main() {
     int a,b;
+    unsigned g;
     
-    b = ( 6 < 3 ) b  7;
+    b = ( a < g ) ? 7 : 4;
 }
 

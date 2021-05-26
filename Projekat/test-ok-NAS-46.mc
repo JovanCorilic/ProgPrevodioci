@@ -1,5 +1,5 @@
 //OPIS: inc nad parametrom - i kao exp i kao statement
-//RETURN: 1
+//RETURN: 2
 int main(int p) {
     int h,b;
     int c,d,e,f;

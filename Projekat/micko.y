@@ -354,6 +354,7 @@ branch_statement
 		 _ARROW statement
 		{ code("\n\t\tJMP \t@exit%d", ifPartPrenos); 
 			code("\n@exit%d:", ifPartPrenos);
+			ifPartPrenos--;
 		} 
 	;
   
@@ -387,7 +388,7 @@ loop_statement
 			
 			temp = 1+((get_type(idx) - 1) * RELOP_NUMBER);
 		}
-		gen_cmp($7,idx);
+		gen_cmp(idx,$7);
     code("\n\t\t%s\t@exit%d", opp_jumps[temp], ifPartPrenos); 
 		code("\n@true%d:", ifPartPrenos);
 	}
@@ -416,6 +417,7 @@ loop_statement
 		gen_mov(nesto,idx);
 		code("\n\t\tJMP \t@loop%d", ifPartPrenos);
 		code("\n@exit%d:", ifPartPrenos);
+		ifPartPrenos--;
 	}
 	;
   
@@ -561,6 +563,7 @@ ekstenzija_exp
 	  	gen_mov($9, komparacijaTemp);
 			code("\n\t\tJMP \t@exit%d", ifPartPrenos);
 			code("\n@exit%d:", ifPartPrenos);
+			ifPartPrenos--;
 			tempPrenosNumExp = komparacijaTemp;
 	  }
 	;	
@@ -692,15 +695,19 @@ argument
 
 if_statement
   : if_part %prec ONLY_IF
-  { code("\n@exit%d:", $1); }
+  { code("\n@exit%d:", $1); 
+  	ifPartPrenos--;
+  }
   | if_part _ELSE statement
-  { code("\n@exit%d:", $1); }
+  { code("\n@exit%d:", $1); 
+  	ifPartPrenos--;
+  }
   ;
 
 if_part
   : _IF _LPAREN 
   {
-    $<i>$ = ++lab_num;
+    
     ifPartPrenos = ++lab_num;
     code("\n@if%d:", lab_num);
     viseLabela = 0;
@@ -751,10 +758,11 @@ while_statement
 	}
 	 logic_rel_exp _RPAREN statement
 	 {
-	 	code("\n\t\tJMP \t@exit%d", ifPartPrenos);
+	 	code("\n\t\tJMP \t@while%d", ifPartPrenos);
     code("\n@false%d:", ifPartPrenos);
     code("\n\t\tJMP \t@exit%d", ifPartPrenos);
     code("\n@exit%d:", ifPartPrenos); 
+    ifPartPrenos--;
 	 }
 	;
 

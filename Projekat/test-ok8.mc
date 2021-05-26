@@ -1,6 +1,6 @@
 //OPIS: primer bloka
 //RETURN: 0
-void main() {
+void main(int y) {
     unsigned a,b,c;
     
     a = 2u;
@@ -11,5 +11,5 @@ void main() {
     	unsigned a;
     	a = a + b;
     }
-    return 0;
+    
 }

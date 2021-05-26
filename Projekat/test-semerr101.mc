@@ -1,8 +1,9 @@
 //OPIS: vise globalnih
 
-int c,ver;
+int cat;
 
 int main() {
     int b,a;
+    
 }
 

@@ -1,5 +1,5 @@
 //OPIS: while iskaz
-//RETURN: 9
+//RETURN: 10
 
 int funkcija(int a, int b){
 	int c;

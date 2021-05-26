@@ -1,5 +1,5 @@
 //OPIS: inc kao exp 2 primer
-//RETURN: 1
+//RETURN: 2
 int main() {
     int k,b;
     int c,d,e,f;
